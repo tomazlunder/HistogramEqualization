@@ -1,8 +1,9 @@
 ﻿  HistogramEqualization.cpp
-d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(150): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(151): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(153): warning C4838: conversion from 'int' to 'size_t' requires a narrowing conversion
-d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(445): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(446): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(448): warning C4838: conversion from 'int' to 'size_t' requires a narrowing conversion
+d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(159): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(160): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(162): warning C4838: conversion from 'int' to 'size_t' requires a narrowing conversion
+d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(449): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(450): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(452): warning C4838: conversion from 'int' to 'size_t' requires a narrowing conversion
+d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(543): warning C4244: '=': conversion from 'float' to 'unsigned char', possible loss of data
   HistogramEqualization.vcxproj -> D:\Projects\VisualStudio projects\HistogramEqualization\x64\Debug\HistogramEqualization.exe
