@@ -1,6 +1,8 @@
 __kernel void localKernel(
 	__global unsigned char *globalIMAGEin,
-	__global unsigned int *globalRESULT
+	__global unsigned int *globalRESULT,
+	const unsigned int width,
+	const unsigned int height
 )
 {
 	__local unsigned int localRESULT[256];
@@ -17,78 +19,25 @@ __kernel void localKernel(
 	// Doda svojo vrednost v lokalni pomnilnik
 	int globalX = get_global_id(0);
 	int globalY = get_global_id(1);
-	int width = get_global_size(0);
 
 	int gid = globalY*width + globalX;
-	unsigned int color = globalIMAGEin[gid];
 
-	atomic_inc(&localRESULT[color]);
+	if(globalX < width & globalY < height){
+		unsigned int color = globalIMAGEin[gid];
+		atomic_inc(&localRESULT[color]);
+	}
 
-	barrier(CLK_LOCAL_MEM_FENCE | CLK_GLOBAL_MEM_FENCE);
+	if(globalX < width & globalY < height){
+		barrier(CLK_LOCAL_MEM_FENCE | CLK_GLOBAL_MEM_FENCE);
 
-	//Kopiranje v globalni pomnilnik
-	if(lid < 256){
-		atomic_add(&globalRESULT[lid], localRESULT[lid]);
+		//Kopiranje v globalni pomnilnik
+		if(lid < 256){
+			atomic_add(&globalRESULT[lid], localRESULT[lid]);
+		}
 	}
 }
 
-__kernel void cdf(__global unsigned int *histogram,
-                   __global unsigned int *output
-)
-{
-	__local unsigned int last[256];
-	__local unsigned int current[256];
-
-
-
-	int gid = get_global_id(0);
-	if(gid<256){
-		output[gid] = histogram[gid];
-	}
-
-}
-
-
-__kernel void cdf2(__global unsigned int *histogram,
-                   __global unsigned int *output)
-{
-	__local unsigned int last[256];
-	__local unsigned int current[256];
-
-    uint gid = get_global_id(0);
-    uint lid = get_local_id(0);
-    uint size = get_local_size(0);
-
-	if(gid > 255) return;
-
-
-	//Nastavi lokalni pomnilnik na zacetno stanje
-	last[lid] = histogram[gid];
-	current[lid] = histogram[gid];
-
-    barrier(CLK_LOCAL_MEM_FENCE);
-
-	uint temp;
-
-    for(uint s = 1; s < size; s =s*2) {
-        if(lid < (s-1) & lid != 0) {
-            current[lid] = last[lid]+last[lid-s];
-        } else {
-            current[lid] = last[lid];
-        }
-        barrier(CLK_LOCAL_MEM_FENCE);
-
-		//Zamenja last
-		temp = last[lid];
-        last[lid] = current[lid];
-		current[lid] = temp;
-    }
-
-	//Copy result to global
-	output[gid] = last[lid];
-}
-
-__kernel void prescan(__global unsigned int *histogram, __global unsigned int *cdf)
+__kernel void cdf(__global unsigned int *histogram, __global unsigned int *cdf)
 {
 	int n = 256;
 	__local unsigned int temp[256];// allocated on invocation
@@ -124,3 +73,55 @@ __kernel void prescan(__global unsigned int *histogram, __global unsigned int *c
  cdf[2*thid] = temp[2*thid]; // write results to device memory
  cdf[2*thid+1] = temp[2*thid+1];
 } 
+
+__kernel void minCdf(__global unsigned int *input, __global unsigned int *n)
+{
+	__local unsigned int temp[256];// allocated on invocation
+	int gid = get_global_id(0);
+
+	if(gid < 256){
+		temp[gid] = input[gid];
+	}
+
+	for(int i = 128; i > 0; i=i/2)
+	{
+		if(gid < i){
+			if(temp[gid] == 0){
+				temp[gid] = temp[gid+i];
+			} else if (temp[gid+i] != 0 & temp[gid+i] < temp[gid]){
+				temp[gid] = temp[gid+i];
+			}
+		}
+		barrier(CLK_LOCAL_MEM_FENCE);
+	}
+
+	if(gid == 0){
+		*n = temp[0];
+	}
+}
+
+__kernel void equalize(__global const unsigned char *imageIn,
+					    __global unsigned char *imageOut,
+						__global const unsigned int *cdf,
+					 	const unsigned int width,
+						const unsigned int height,
+						const unsigned int cdfMin)
+{
+	int gX = get_global_id(0);
+	int gY = get_global_id(1);
+
+	int gid = gY * width + gX;
+
+	if(gX < width & gY < height){
+		unsigned long imageSize = width * height;
+
+		float scale;
+		scale = (float)(cdf[imageIn[gid]] - cdfMin) / (float) (imageSize - cdfMin);
+		scale = round(scale * (float)(256-1));
+		
+		
+		imageOut[gid] = (int) scale;
+
+		//imageOut[gid] = 155;
+	}
+}
