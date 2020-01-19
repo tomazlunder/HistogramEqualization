@@ -1,4 +1,3 @@
-﻿  pch.cpp
-  HistogramEqualization.cpp
-d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(144): warning C4838: conversion from 'int' to 'size_t' requires a narrowing conversion
+﻿  HistogramEqualization.cpp
+d:\projects\visualstudio projects\histogramequalization\histogramequalization\histogramequalization.cpp(143): warning C4838: conversion from 'int' to 'size_t' requires a narrowing conversion
   HistogramEqualization.vcxproj -> D:\Projects\VisualStudio projects\HistogramEqualization\x64\Debug\HistogramEqualization.exe
