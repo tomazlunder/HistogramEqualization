@@ -1,3 +1,3 @@
 # HistogramEqualization
 
-Histogram equalization with CPU and GPU. Comparison project.
+Histogram equalization by using CPU and GPU, time comparison.
